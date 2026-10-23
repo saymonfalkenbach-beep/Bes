@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Beatriz ❤️</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    overflow: hidden; background: #000;
+    font-family: 'Georgia', serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  canvas { display: block; position: absolute; top: 0; left: 0; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+
+  #nome {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.3);
+    color: #ffd6e8;
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: bold; letter-spacing: 0.15em;
+    text-shadow:
+      0 0 10px #ff4d94, 0 0 25px #ff1a75,
+      0 0 50px #ff0066, 0 0 80px #cc0052;
+    opacity: 0; z-index: 10;
+    pointer-events: none; user-select: none;
+    transition: opacity 2s ease, transform 2s ease;
+  }
+  #nome.visivel {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: pulsar 2.5s ease-in-out infinite 2s;
+  }
+  @keyframes pulsar {
+    0%, 100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+  }
+
+  #frase {
+    position: absolute; bottom: 8%; left: 50%;
+    transform: translateX(-50%);
+    color: #ffb3d1;
+    font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+    font-style: italic; letter-spacing: 0.05em;
+    text-shadow: 0 0 10px #ff3388;
+    z-index: 10; pointer-events: none;
+    text-align: center; width: 90%;
+    opacity: 0; transition: opacity 2s ease;
+  }
+  #frase.visivel { opacity: 1; }
+
+  #dica {
+    position: absolute; top: 20px; left: 50%;
+    transform: translateX(-50%);
+    color: #ff9dc7; font-size: 0.8rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    opacity: 0; z-index: 10; pointer-events: none;
+    text-shadow: 0 0 8px #ff3388;
+    transition: opacity 1.5s ease;
+    white-space: nowrap;
+  }
+  #dica.visivel { opacity: 0.7; }
+
+  #btnBigBang {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 22px 52px;
+    min-width: 240px;
+    font-family: 'Georgia', serif;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    font-weight: bold;
+    letter-spacing: 0.18em;
+    color: #fff;
+    background: linear-gradient(135deg, #ff4d94 0%, #a3005c 50%, #6a00ff 100%);
+    background-size: 200% 200%;
+    border: 2px solid #ffd6e8;
+    border-radius: 60px;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow:
+      0 0 25px #ff1a75,
+      0 0 60px #ff0066,
+      0 0 100px rgba(160, 0, 255, 0.5),
+      inset 0 0 25px rgba(255, 255, 255, 0.35);
+    animation: brilharBotao 2.5s ease-in-out infinite,
+               gradienteBotao 4s ease infinite;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    touch-action: manipulation;
+    user-select: none;
+    overflow: hidden;
+  }
+  #btnBigBang::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%);
+    transform: rotate(25deg) translateX(-100%);
+    animation: brilhoPassando 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  #btnBigBang:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow:
+      0 0 40px #ff4d94,
+      0 0 100px #ff0066,
+      0 0 150px rgba(160, 0, 255, 0.7),
+      inset 0 0 35px rgba(255, 255, 255, 0.6);
+  }
+  #btnBigBang.sumir {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3) rotate(-15deg);
+    pointer-events: none;
+  }
+  @keyframes brilharBotao {
+    0%, 100% {
+      box-shadow: 0 0 25px #ff1a75, 0 0 60px #ff0066,
+                  0 0 100px rgba(160,0,255,0.5),
+                  inset 0 0 25px rgba(255,255,255,0.35);
+    }
+    50% {
+      box-shadow: 0 0 45px #ff4d94, 0 0 110px #ff0066,
+                  0 0 160px rgba(160,0,255,0.8),
+                  inset 0 0 40px rgba(255,255,255,0.6);
+    }
+  }
+  @keyframes gradienteBotao {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes brilhoPassando {
+    0% { transform: rotate(25deg) translateX(-100%); }
+    60%, 100% { transform: rotate(25deg) translateX(150%); }
+  }
+
+  #btnFinal {
+    position: absolute;
+    bottom: 22%;
+    left: 50%;
+    transform: translate(-50%, 30px) scale(0.8);
+    padding: 16px 36px;
+    font-family: 'Georgia', serif;
+    font-size: clamp(0.95rem, 2.4vw, 1.25rem);
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, #ff2d75 0%, #ff7a45 50%, #c13584 100%);
+    background-size: 200% 200%;
+    border: 2px solid #ffe0ec;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow:
+      0 0 20px #ff2d75,
+      0 0 50px rgba(193, 53, 132, 0.7),
+      inset 0 0 18px rgba(255, 255, 255, 0.3);
+    transition: opacity 1.5s ease, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    animation: gradienteBotao 4s ease infinite;
+    touch-action: manipulation;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  #btnFinal.visivel {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+    pointer-events: auto;
+  }
+  #btnFinal:hover {
+    transform: translate(-50%, 0) scale(1.1);
+    box-shadow:
+      0 0 35px #ff2d75,
+      0 0 90px rgba(193, 53, 132, 0.9),
+      inset 0 0 25px rgba(255, 255, 255, 0.5);
+  }
+  #btnFinal .ig-icon { width: 22px; height: 22px; flex-shrink: 0; }
+
+  #flash {
+    position: absolute; inset: 0;
+    background: #fff; opacity: 0;
+    pointer-events: none; z-index: 30;
+    transition: opacity 0.15s ease;
+  }
+  #flash.ativo { opacity: 1; transition: opacity 0.05s ease; }
+
+  @media (max-width: 500px) {
+    #btnFinal {
+      bottom: 18%;
+      padding: 14px 28px;
+      font-size: 0.9rem;
+    }
+    #btnFinal .ig-icon { width: 18px; height: 18px; }
+    #frase { bottom: 6%; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="galaxia"></canvas>
+<div id="nome">Beatriz</div>
+<div id="frase">Você é a minha galáxia inteira ✨</div>
+<div id="dica">✨ Arraste para girar ✨</div>
+<button id="btnBigBang">💥 Big Bang 💥</button>
+
+<a id="btnFinal"
+   href="https://www.instagram.com/falkn_saymn?rpxt=MTdwMG52OW9xampsOA=="
+   target="_blank"
+   rel="noopener noreferrer">
+  <svg class="ig-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="white" stroke-width="1.8"/>
+    <circle cx="12" cy="12" r="4.2" stroke="white" stroke-width="1.8"/>
+    <circle cx="17.3" cy="6.7" r="1.2" fill="white"/>
+  </svg>
+  Amor da sua vida
+</a>
+
+<div id="flash"></div>
+
+<script>
+// ===================================================================
+//  BLINDAGEM ANTI-MÚLTIPLA-EXECUÇÃO
+//  (evita listeners duplicados / loops empilhados em hot reload)
+// ===================================================================
+if (window.__beaIniciado) {
+  console.warn('Galáxia da Beatriz já foi iniciada. Ignorando execução duplicada.');
+} else {
+  window.__beaIniciado = true;
+
+  const canvas = document.getElementById('galaxia');
+  const ctx = canvas.getContext('2d');
+  const btn = document.getElementById('btnBigBang');
+  const btnFinal = document.getElementById('btnFinal');
+  const nomeEl = document.getElementById('nome');
+  const fraseEl = document.getElementById('frase');
+  const dicaEl = document.getElementById('dica');
+  const flashEl = document.getElementById('flash');
+
+  let W, H, cx, cy;
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cx = W / 2;
+    cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // =============================================================
+  //  EQUAÇÃO DO CORAÇÃO
+  // =============================================================
+  function coracao(t) {
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+    return { x, y: -y };
+  }
+  const escala = () => Math.min(W, H) / 40;
+
+  // =============================================================
+  //  ESTADO
+  // =============================================================
+  let fase = 'espera';
+  let tempoBigBang = 0;
+  let nomeMostrado = false;
+  let finalMostrado = false;
+  let bigBangDisparado = false; // trava contra duplo clique
+  let tempo = 0;
+
+  // Rotação 3D
+  let rotY = 0, rotX = 0;
+  let targetRotY = 0, targetRotX = 0;
+  let arrastando = false;
+  let ultimoX = 0, ultimoY = 0;
+  let autoRot = 0;
+
+  // =============================================================
+  //  ÁUDIO — AudioContext ÚNICO E REAPROVEITÁVEL
+  //  (a causa do bug "só abre uma vez" era criar e fechar
+  //   um AudioContext novo a cada clique)
+  // =============================================================
+  let audioCtxGlobal = null;
+
+  function obterAudioCtx() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+
+      // Cria só uma vez
+      if (!audioCtxGlobal || audioCtxGlobal.state === 'closed') {
+        audioCtxGlobal = new AudioCtx();
+      }
+      // Retoma se estiver suspenso (política dos navegadores móveis)
+      if (audioCtxGlobal.state === 'suspended') {
+        audioCtxGlobal.resume().catch(() => {});
+      }
+      return audioCtxGlobal;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function tocarBigBang() {
+    try {
+      const audioCtx = obterAudioCtx();
+      if (!audioCtx) return;
+      const agora = audioCtx.currentTime;
+
+      // Whoosh grave
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, agora);
+      osc.frequency.exponentialRampToValueAtTime(28, agora + 1.6);
+      gain.gain.setValueAtTime(0.0001, agora);
+      gain.gain.exponentialRampToValueAtTime(0.28, agora + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, agora + 1.6);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(agora); osc.stop(agora + 1.7);
+      osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e){} };
+
+      // Sino agudo
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(880, agora);
+      osc2.frequency.exponentialRampToValueAtTime(220, agora + 1.2);
+      gain2.gain.setValueAtTime(0.0001, agora);
+      gain2.gain.exponentialRampToValueAtTime(0.12, agora + 0.02);
+      gain2.gain.exponentialRampToValueAtTime(0.001, agora + 1.2);
+      osc2.connect(gain2); gain2.connect(audioCtx.destination);
+      osc2.start(agora); osc2.stop(agora + 1.25);
+      osc2.onended = () => { try { osc2.disconnect(); gain2.disconnect(); } catch(e){} };
+
+      // NUNCA fecha o contexto — apenas libera os nós.
+    } catch (e) { /* silencioso */ }
+  }
+
+  // =============================================================
+  //  PARTÍCULAS DO BIG BANG
+  // =============================================================
+  const particulasBigBang = [];
+  function criarBigBang() {
+    particulasBigBang.length = 0;
+    const N = 800;
+    for (let i = 0; i < N; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const vel = Math.random() * 16 + 3;
+      const c = Math.random();
+      let cor;
+      if (c < 0.3) cor = '255, 100, 180';
+      else if (c < 0.55) cor = '255, 200, 230';
+      else if (c < 0.75) cor = '180, 120, 255';
+      else if (c < 0.9) cor = '120, 200, 255';
+      else cor = '255, 255, 255';
+      particulasBigBang.push({
+        x: cx, y: cy,
+        vx: Math.cos(ang) * vel,
+        vy: Math.sin(ang) * vel,
+        life: 1,
+        decay: Math.random() * 0.012 + 0.006,
+        size: Math.random() * 3.5 + 1,
+        cor
+      });
+    }
+  }
+
+  // =============================================================
+  //  ESTRELAS DA GALÁXIA 3D
+  // =============================================================
+  const estrelas = [];
+  const NUM_ESTRELAS = 1600;
+  let estrelasCriadas = 0;
+
+  function gerarEstrela() {
+    const t = Math.random() * Math.PI * 2;
+    const p = coracao(t);
+    const r = Math.pow(Math.random(), 0.65);
+    const anguloExtra = Math.random() * Math.PI * 2;
+    const spreadX = Math.cos(anguloExtra) * r * 0.9;
+    const spreadY = Math.sin(anguloExtra) * r * 0.9;
+
+    const zSpread = 6;
+    const z = (Math.random() - 0.5) * 2 * zSpread;
+
+    const c = Math.random();
+    let color;
+    if (c < 0.35) color = 'rgba(255, 120, 180, ';
+    else if (c < 0.65) color = 'rgba(255, 190, 220, ';
+    else if (c < 0.85) color = 'rgba(200, 100, 255, ';
+    else color = 'rgba(255, 255, 255, ';
+
+    estrelas.push({
+      px: p.x, py: p.y,
+      spreadX, spreadY, z,
+      size: Math.random() * 1.8 + 0.4,
+      brilho: Math.random(),
+      velBrilho: Math.random() * 0.02 + 0.005,
+      cor: color,
+      fase: Math.random() * Math.PI * 2,
+      aparecer: 0
+    });
+  }
+
+  // Poeira de fundo
+  const poeira = [];
+  for (let i = 0; i < 300; i++) {
+    poeira.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      size: Math.random() * 1.2,
+      alpha: Math.random() * 0.4 + 0.1,
+      vel: Math.random() * 0.15 + 0.02
+    });
+  }
+
+  // =============================================================
+  //  INTERAÇÃO DE ARRASTE (mouse + touch)
+  // =============================================================
+  function pegarPonto(e) {
+    if (e.touches && e.touches.length) {
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+  }
+  function onDown(e) {
+    if (fase === 'espera') return;
+    arrastando = true;
+    const p = pegarPonto(e);
+    ultimoX = p.x;
+    ultimoY = p.y;
+  }
+  function onMove(e) {
+    if (!arrastando) return;
+    const p = pegarPonto(e);
+    const dx = p.x - ultimoX;
+    const dy = p.y - ultimoY;
+    targetRotY += dx * 0.008;
+    targetRotX += dy * 0.005;
+    targetRotX = Math.max(-0.6, Math.min(0.6, targetRotX));
+    ultimoX = p.x;
+    ultimoY = p.y;
+  }
+  function onUp() { arrastando = false; }
+
+  canvas.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  canvas.addEventListener('touchstart', onDown, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('touchend', onUp);
+
+  // =============================================================
+  //  LOOP PRINCIPAL
+  // =============================================================
+  function desenhar() {
+    if (fase === 'bigbang') {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+    } else {
+      ctx.fillStyle = 'rgba(5, 0, 15, 0.25)';
+    }
+    ctx.fillRect(0, 0, W, H);
+
+    if (fase !== 'espera') {
+      for (const p of poeira) {
+        p.y -= p.vel;
+        if (p.y < 0) { p.y = H; p.x = Math.random() * W; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(180, 150, 255, ${p.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    const s = escala();
+    const pulso = 1 + Math.sin(tempo * 0.03) * 0.03;
+
+    autoRot += 0.0025;
+    const desiredY = targetRotY + autoRot;
+    rotY += (desiredY - rotY) * 0.08;
+    rotX += (targetRotX - rotX) * 0.08;
+
+    const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+    const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+
+    // ----- BIG BANG -----
+    if (fase === 'bigbang') {
+      tempoBigBang++;
+
+      const raioNucleo = Math.min(tempoBigBang * 6, Math.max(W, H));
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, raioNucleo);
+      grad.addColorStop(0, `rgba(255, 255, 255, ${Math.max(0, 1 - tempoBigBang / 60)})`);
+      grad.addColorStop(0.3, `rgba(255, 150, 200, ${Math.max(0, 0.7 - tempoBigBang / 80)})`);
+      grad.addColorStop(0.7, `rgba(150, 80, 255, ${Math.max(0, 0.3 - tempoBigBang / 120)})`);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, raioNucleo, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (const p of particulasBigBang) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+        p.life -= p.decay;
+        if (p.life <= 0) continue;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.cor}, ${p.life})`;
+        ctx.fill();
+
+        if (p.size > 2.5) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2.5 * p.life, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.cor}, ${p.life * 0.15})`;
+          ctx.fill();
+        }
+      }
+
+      if (tempoBigBang > 150) fase = 'galaxia';
+    }
+
+    // ----- GALÁXIA 3D -----
+    if (fase === 'galaxia' || fase === 'bigbang') {
+      const porFrame = 20;
+      for (let i = 0; i < porFrame && estrelasCriadas < NUM_ESTRELAS; i++) {
+        gerarEstrela();
+        estrelasCriadas++;
+      }
+
+      const intensidade = fase === 'galaxia' ? 1 : 0.5;
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, s * 5);
+      grad.addColorStop(0, `rgba(255, 80, 140, ${0.35 * intensidade})`);
+      grad.addColorStop(0.4, `rgba(200, 40, 120, ${0.15 * intensidade})`);
+      grad.addColorStop(1, 'rgba(80, 0, 60, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, s * 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      const render = [];
+
+      for (const e of estrelas) {
+        if (e.aparecer < 1) e.aparecer += 0.02;
+        e.brilho += e.velBrilho;
+
+        const ang = tempo * 0.0015 + e.fase;
+        const rx = e.spreadX * Math.cos(ang) - e.spreadY * Math.sin(ang);
+        const ry = e.spreadX * Math.sin(ang) + e.spreadY * Math.cos(ang);
+
+        const ox = (e.px * pulso + rx * 1.1) * s * 0.9;
+        const oy = (e.py * pulso + ry * 1.1) * s * 0.9;
+        const oz = e.z * s * 0.35;
+
+        const x1 = ox * cosY - oz * sinY;
+        const z1 = ox * sinY + oz * cosY;
+        const y1 = oy * cosX - z1 * sinX;
+        const z2 = oy * sinX + z1 * cosX;
+
+        const FOV = 900;
+        const zPersp = FOV / (FOV + z2 + 400);
+        const finalX = cx + x1 * zPersp;
+        const finalY = cy + y1 * zPersp;
+
+        render.push({
+          x: finalX, y: finalY, z: z2,
+          size: e.size * zPersp,
+          osc: (0.6 + Math.sin(e.brilho) * 0.4) * e.aparecer,
+          cor: e.cor,
+          alpha: Math.min(1, zPersp * 1.2)
+        });
+      }
+
+      render.sort((a, b) => b.z - a.z);
+
+      for (const r of render) {
+        const alpha = r.osc * r.alpha;
+        if (alpha <= 0) continue;
+
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.size, 0, Math.PI * 2);
+        ctx.fillStyle = r.cor + alpha + ')';
+        ctx.fill();
+
+        if (r.size > 1.3) {
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.size * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = r.cor + (alpha * 0.15) + ')';
+          ctx.fill();
+        }
+      }
+
+      if (!nomeMostrado && estrelasCriadas >= NUM_ESTRELAS * 0.75) {
+        nomeMostrado = true;
+        nomeEl.classList.add('visivel');
+        fraseEl.classList.add('visivel');
+        setTimeout(() => dicaEl.classList.add('visivel'), 1500);
+      }
+
+      if (nomeMostrado && !finalMostrado && estrelasCriadas >= NUM_ESTRELAS) {
+        finalMostrado = true;
+        setTimeout(() => btnFinal.classList.add('visivel'), 1200);
+      }
+    }
+
+    tempo++;
+    requestAnimationFrame(desenhar);
+  }
+
+  // =============================================================
+  //  DISPARO DO BIG BANG (blindado contra duplo clique)
+  // =============================================================
+  function iniciarBigBang(e) {
+    if (e && e.cancelable) e.preventDefault();
+    if (bigBangDisparado || fase !== 'espera') return;
+    bigBangDisparado = true;
+
+    btn.classList.add('sumir');
+    tocarBigBang();
+
+    flashEl.classList.add('ativo');
+    setTimeout(() => flashEl.classList.remove('ativo'), 120);
+
+    criarBigBang();
+    fase = 'bigbang';
+    tempoBigBang = 0;
+
+    setTimeout(() => {
+      if (!nomeMostrado) {
+        nomeMostrado = true;
+        nomeEl.classList.add('visivel');
+        fraseEl.classList.add('visivel');
+        dicaEl.classList.add('visivel');
+      }
+      if (!finalMostrado) {
+        finalMostrado = true;
+        btnFinal.classList.add('visivel');
+      }
+    }, 7000);
+  }
+
+  btn.addEventListener('click', iniciarBigBang);
+  btn.addEventListener('pointerdown', iniciarBigBang);
+
+  // Inicia o loop
+  desenhar();
+}
+</script>
+
+</body>
+</html>
